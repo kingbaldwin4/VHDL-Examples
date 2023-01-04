@@ -1,0 +1,62 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eWashing is
+  Port(s:in std_logic;
+    g:in std_logic_vector(1 downto 0);
+    f,h:out std_logic);
+  end eWashing;
+  architecture struct of eWashing is
+    type tDurumlar is(bsl,yk,drl,skm,hata);
+      signal dSimdi:tDurumlar:=bsl;
+      begin
+      process(s)
+        begin
+          if(rising_edge(s))then
+          case dSimdi is
+          when bsl=>
+            if(g="00")then
+            f<='0';
+            h<='0';
+            dSimdi<=yk;
+          elsif(g="01")then
+          f<='0';
+          h<='0';
+          dSimdi<=drl;
+        elsif(g="10")then
+        f<='0';
+        h<='0';
+        dSimdi<=skm;
+      else
+        dSimdi<=hata;
+      end if;
+    when yk=>
+      if(g="01")then
+      f<='0';
+      h<='0';
+      dSimdi<=drl;
+    else
+      dSimdi<=hata;
+    end if;
+  when drl=>
+    if(g="10")then
+    f<='0';
+    h<='0';
+    dSimdi<=skm;
+  else
+    dSimdi<=hata;
+  end if;
+when skm=>
+  f<='1';
+  h<='0';
+  dSimdi<=bsl;
+when hata=>
+  h<='1';
+end case;
+end if;
+end process;
+end struct;

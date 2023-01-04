@@ -1,0 +1,33 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Use IEEE.math_real.all;
+Entity eDongu is
+end eDongu;
+Architecture behv of eDongu is
+  signal s:std_logic:='0';
+Begin
+  clock:process(s)
+    begin
+      s<=not(s) after 100 ps;
+    end process clock;
+  yaz:Process(s)
+    file dosya:text open write_mode is "C:\dongu.txt";
+    variable satir:line;
+    begin
+      if(rising_edge(s))then
+      for i in 0 to 8 loop
+        write(satir,i);
+      end loop;
+      writeline(dosya,satir);
+    end if;
+  end process yaz;
+end behv;
+
+--write kaç tane deðeri tampona yazacaðýmýzdýr
+--writeline ise kaç tane satýra yazacaðýmýzdýr
+  

@@ -1,0 +1,44 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.std_logic_arith.all;
+Use std.textio.all;
+Entity eOggy is
+  Port(x,y:in std_logic_vector(15 downto 0);
+    e:out std_logic;
+    t:out std_logic_vector(15 downto 0));
+  end eOggy;
+  Architecture behv of eOggy is
+    component eWhole_Sum is
+    Port(a,b:in std_logic;
+      eg:in std_logic;
+      ec:out std_logic;
+      f:out std_logic);
+    end component;
+    component eHalf_Sum is
+    Port(a,b:in std_logic;
+      ec:out std_logic;
+      f:out std_logic);
+    end component;
+    signal c:std_logic_vector(0 to 15);
+    Begin
+      Sum_Loop:
+      for i in 0 to 15 generate
+        ilk_basamak:if i=0 generate
+        first:eHalf_Sum 
+        port map(a=>x(i),b=>y(i),f=>t(i),ec=>c(i));
+        end generate ilk_basamak;
+        orta_basamaklar:if i>0 and i<15 generate
+        middle:eWhole_Sum
+        port map(a=>x(i),b=>y(i),f=>t(i),eg=>c(i-1),ec=>c(i));
+        end generate orta_basamaklar;
+        son_basamak:if i=15 generate
+        last:eWhole_Sum
+        port map(a=>x(i),b=>y(i),f=>t(i),eg=>c(i-1),ec=>e);
+        end generate son_basamak;
+      end generate Sum_Loop;
+    end behv;
+        
+    

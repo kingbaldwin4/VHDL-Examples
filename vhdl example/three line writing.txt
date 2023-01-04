@@ -1,0 +1,32 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eNumb is
+end eNumb;
+Architecture behv of eNumb is
+  signal s:std_logic:='0';
+begin
+  clock:process(s)
+    begin
+      s<=not(s) after 50 ps;
+    end process clock;
+    yaz:process(s)
+    variable satir_1:line;
+    variable satir_2:line;
+    variable satir_3:line;
+    file fb:text open write_mode is "C:\source.txt"; --you must create a source.txt
+    begin
+      if(rising_edge(s))then
+      write(satir_1,0);
+      write(satir_2,string'("merhaba"));
+      write(satir_3,1);
+      writeline(fb,satir_3);
+      writeline(fb,satir_1);
+      writeline(fb,satir_2);
+    end if;
+  end process yaz;
+end behv;

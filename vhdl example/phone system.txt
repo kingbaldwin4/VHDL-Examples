@@ -1,0 +1,28 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.std_logic_arith.all;
+Entity ePhone is
+  Port(fb,gs,ts,bjk:in std_logic;
+    x,y:in std_logic_vector(1 downto 0);
+    u,v,z,q:out std_logic);
+  end ePhone;
+  Architecture struct of ePhone is
+    component eMUX is
+      port(a,b,c,d:in std_logic;
+        s:in std_logic_vector(1 downto 0);
+        f:out std_logic);
+      end component;
+      component eDEMUX is
+        port(o:in std_logic;
+          r:in std_logic_vector(1 downto 0);
+          k,l,m,n:out std_logic);
+        end component;
+        signal h:std_logic;
+        begin
+          coklayici:eMUX 
+          port map(a=>fb,b=>gs,c=>ts,d=>bjk,s=>x,f=>h);
+            tekleyici:eDEMUX
+            port map(o=>h,k=>u,l=>v,m=>z,n=>q,r=>y);
+            end struct;

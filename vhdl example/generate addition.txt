@@ -1,0 +1,44 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eGen_Sum is
+Generic(m:natural:=16);
+Port(k,l:in std_logic_vector(m-1 downto 0);
+  cout:out std_logic;
+  p:out std_logic_vector(m-1 downto 0));
+end eGen_Sum;
+Architecture struct of eGen_Sum is
+  Component eHalf_Adder is
+    Port(a,b:in std_logic;
+      d:out std_logic;
+      ec:out std_logic);
+    end component;
+    Component eFull_Adder is
+      Port(x,y:in std_logic;
+        eg:in std_logic;
+        ec:out std_logic;
+        z:out std_logic);
+      end component;
+      signal cin:std_logic_vector(15 downto 0);
+      begin
+        Sum_Loop:for i in 0 to m-1 generate
+          First_Sub:if i=0 generate
+          M1:eHalf_Adder port map(a=>k(i),b=>l(i),d=>p(i),ec=>cin(i));
+          end generate First_Sub;
+          Other_Subs:if i>0 and i<m-1 generate
+          M2:eFull_Adder port map(x=>k(i),y=>l(i),z=>p(i),ec=>cin(i),eg=>cin(i-1));
+          end generate Other_Subs;
+          Last_Sub:if i=m-1 generate
+          M3:eFull_Adder port map(x=>k(i),y=>l(i),z=>p(i),ec=>cout,eg=>cin(i-1));
+        end generate Last_Sub;
+      end generate Sum_Loop;
+    end struct;
+
+
+
+-- tam toplayici z=x xor y xor eg   ec= (x and y) or (y and eg) and (eg and x)
+-- yarim toplayici d= a xor b  ec= a and b

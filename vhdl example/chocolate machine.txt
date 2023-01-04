@@ -1,0 +1,56 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eCikolata is
+  Port(s:in std_logic;
+    g:in std_logic;
+    f:out std_logic);
+  end eCikolata;
+  architecture struct of eCikolata is
+    type tDurumlar is(K0,K25,K50,K75);
+      signal dSimdi:tDurumlar:=K0;
+      begin --mimari
+      process(s)
+        begin
+          if(rising_edge(s))then
+          case dSimdi is
+          when K0=>
+            if(g='0')then
+            f<='0';
+            dSimdi<=K25;
+          elsif(g='1')then
+          f<='0';
+          dSimdi<=K50;
+        end if;
+      when K25=>
+        if(g='0')then
+        f<='0';
+        dSimdi<=K50;
+      elsif(g='1')then
+      f<='0';
+      dSimdi<=K75;
+    end if;
+  when K50=>
+    if(g='0')then
+    f<='0';
+    dSimdi<=K75;
+  elsif(g='1')then
+  f<='1';
+  dSimdi<=K0;
+end if;
+when K75=>
+  if(g='0')then
+  f<='1';
+  dSimdi<=K0;
+elsif(g='1')then
+f<='1';
+dSimdi<=K25;
+end if;
+end case;
+end if; --her saat sinyalinde
+end process;
+end struct;

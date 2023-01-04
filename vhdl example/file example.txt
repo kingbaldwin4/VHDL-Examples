@@ -1,0 +1,57 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eDtopla is
+end eDtopla;
+architecture behv of eDtopla is
+  file fInput:text;
+  file fOutput:text;
+  constant tn:natural:=8;
+  signal ta:std_logic_vector(tn-1 downto 0);
+  signal tb:std_logic_vector(tn-1 downto 0);
+  signal tf:std_logic_vector(tn-1 downto 0);
+  signal te:std_logic;
+  component eTopla is
+    generic(n:natural:=8);
+    Port(a,b:in std_logic_vector(n-1 downto 0);
+      toplam:out std_logic_vector(n-1 downto 0);
+      e:out std_logic);
+    end component;
+    Begin
+    M1:eTopla
+    generic map(n=>tn)
+    port map(a=>ta,b=>tb,toplam=>tf,e=>te);
+      process
+        variable iline:line;
+        variable oline:line;
+        variable va:std_logic_vector(tn-1 downto 0);
+        variable vb:std_logic_vector(tn-1 downto 0);
+        variable vf:std_logic_vector(tn-1 downto 0);
+        constant periyot:time:=100 ps;
+        variable SPACE:character;
+        begin
+        file_open(fInput,"fIn.txt",read_mode);
+        file_open(fOutput,"fOut.txt",write_mode);
+        while not endfile(fInput) loop
+          readline(fInput,iline);
+          read(iline,va);
+          read(iline,SPACE);
+          read(iline,vb);
+          ta<=va;
+          tb<=vb;
+          report "va:"&integer'image(to_integer(unsigned(va)));
+          report "vb:"&integer'image(to_integer(unsigned(vb)));
+          wait for 100 ns;
+          write(oline,tf,right,tn);
+          write(oline,te,right,tn);
+          writeline(fOutput,oline);
+          report "vf:"&integer'image(to_integer(unsigned(tf)));
+          end loop;
+          file_close(fInput);
+          file_close(fOutput);
+          wait;
+          end process;
+          end behv;
+          

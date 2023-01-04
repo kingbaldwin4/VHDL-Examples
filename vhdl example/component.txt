@@ -1,0 +1,40 @@
+Library IEEE;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Use IEEE.std_logic_1164.all;
+Entity eSeker is
+end eSeker;
+Architecture Behv of eSeker is
+    component eTuz is
+      Port(a,b:in std_logic;
+        f:out std_logic);
+      end component;
+      signal ta:std_logic:='0';
+      signal tb:std_logic:='0';
+      signal tf:std_logic;
+      begin
+        M1:eTuz port MAP(ta,tb,tf);
+          process
+            begin
+             ta<='0';
+              tb<='0';
+              wait for  100 ps;
+              ta<='1';
+              tb<='0';
+              wait for  100 ps;
+        
+        ta<='0';
+              tb<='1';
+              wait for  100 ps;
+        
+        ta<='1';
+              tb<='1';
+              wait for 100 ps;
+              Assert false
+              Report "simulasyon sonu"
+              Severity Failure;
+            end process;
+          end behv;
+        
+        
+

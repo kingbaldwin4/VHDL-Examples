@@ -1,0 +1,35 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Entity eFB is
+end eFB;
+Architecture behv of eFB is
+  component eComp is
+  Generic(n:natural:=8);
+    Port(s,r:in std_logic;
+      f:out std_logic_vector(n-1 downto 0));
+    end component;
+    signal ks:std_logic:='0';
+    signal kr:std_logic:='0';
+    signal kf:std_logic_vector(7 downto 0);
+    constant periyot:time:=100 ps;
+  begin
+    M1:eComp port map(s=>ks,r=>kr,f=>kf);
+      saat:process
+      begin
+      ks<='0';
+      wait for periyot/2;
+      ks<='1';
+      wait for periyot/2;
+      end process;
+      reset:process
+      begin
+      kr<='0';
+      wait for 6*periyot;
+      kr<='1';
+      wait for 2*periyot;
+    end process;
+    end behv;
+        

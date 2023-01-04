@@ -1,0 +1,54 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eFile_Sum is
+end eFile_Sum;
+Architecture behv of eFile_Sum is
+  component eSum is
+     Generic(n:natural:=8);
+  Port(x,y:in std_logic_vector(n-1 downto 0);
+    e:out std_logic;
+    z:out std_logic_vector(n-1 downto 0));
+  end component;
+  constant m:natural:=8;
+  signal s:bit;
+  signal d_sonu:bit:='0';
+  signal tx:std_logic_vector(m-1 downto 0); --map yapilacak x
+  signal ty:std_logic_vector(m-1 downto 0); --map yapilacak y
+  signal tz:std_logic_vector(m-1 downto 0); --map yapilacak z
+  signal te:std_logic; --map yapilacak e
+begin --mimari
+  M1:eSum generic map(n=>m)
+  port map(x=>tx,y=>ty,z=>tz,e=>te);
+    rw:process(s)
+      file toku:text open read_mode is "C:\sum.txt";
+      file tyaz:text open write_mode is "C:\result.txt";
+      variable csatir:line;
+      variable dsatir:line;
+      variable asatir:line;
+      variable bsatir:line;
+      variable vx:std_logic_vector(7 downto 0);
+      variable vy:std_logic_vector(7 downto 0);
+      begin
+      if(s'event and s='1')then
+      while not endfile(toku)loop
+      readline(toku,asatir);
+      readline(toku,bsatir);
+      read(asatir,vx);
+      read(bsatir,vy);
+      tx<=vx;
+      ty<=vy;
+    end loop;
+    d_sonu<='1';
+  else
+    write(csatir,tz);
+    write(dsatir,te);
+    writeline(tyaz,csatir);
+    writeline(tyaz,dsatir);
+  end if;
+end process rw;
+end behv;

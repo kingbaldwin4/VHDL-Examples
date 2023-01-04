@@ -1,0 +1,174 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Use IEEE.math_real.all;
+Entity eRC5 is
+  Port(r,s:in std_logic;
+    tmm:out std_logic; --sifreleme tamamlandi
+    q:in std_logic; --giris
+    D:in std_logic_vector(31 downto 0);
+    F:out std_logic_vector(31 downto 0));
+  end eRC5;
+    Architecture struct of eRC5 is
+      signal I:std_logic_vector(3 downto 0); --cevrim sayaci
+      signal xAB:std_logic_vector(15 downto 0); -- A xor B
+      signal rA:std_logic_vector(15 downto 0);
+      signal A:std_logic_vector(15 downto 0);
+      signal iA:std_logic_vector(15 downto 0); --ilk A
+      signal yA:std_logic_vector(15 downto 0); --yazmac A
+      signal xBA:std_logic_vector(15 downto 0); -- B xor A
+      signal rB:std_logic_vector(15 downto 0);
+      signal B:std_logic_vector(15 downto 0);
+      signal iB:std_logic_vector(15 downto 0); --ilk B
+      signal yB:std_logic_vector(15 downto 0); -- yazmac B
+      -- define a type for round keys
+      Type ROM is array (0 to 12) of
+      std_logic_vector(15 downto 0);
+      --ROM bellege 13+13 tane sabit deger yazilir
+      constant aA:ROM:=ROM'(X"9BBB",X"46F8",X"70F8",
+      X"513E",X"3125",X"D427",X"4B79",
+      X"A790",X"36C0",X"61A7",
+    X"4DBF",X"30D7",X"F6CC");
+    constant aB:ROM:=ROM'(X"1A37",X"460C",X"284B",
+    X"F621",X"11A8",X"713A",X"2799",
+    X"DEDE",X"A7EF",X"3B0A",X"AE16",
+    X"4319",X"6504");
+
+--RC5 dSimdi 4 durum var
+type tDurumlar is(dBSL,dYKL,dSFRL,dTMM);
+  signal dSimdi:tDurumlar;
+  Begin --mimari
+  --A=((A XOR B)<<<B) + aA[i];
+  xAB<=yA XOR yB;
+  with yB(3 downto 0) select
+  rA<=xAB(14 downto 0)&xAB(15) when "0001",
+  xAB(13 downto 0)&xAB(15 downto 14) when "0010",
+  xAB(12 downto 0)&xAB(15 downto 13) when "0011",
+  xAB(11 downto 0)&xAB(15 downto 12) when "0100",
+  xAB(10 downto 0)&xAB(15 downto 11) when "0101",
+  xAB(9 downto 0)&xAB(15 downto 10) when "0110",
+  xAB(8 downto 0)&xAB(15 downto 9) when "0111",
+  xAB(7 downto 0)&xAB(15 downto 8) when "1000",
+  xAB(6 downto 0)&xAB(15 downto 7) when "1001",
+  xAB(5 downto 0)&xAB(15 downto 6) when "1010",
+  xAB(4 downto 0)&xAB(15 downto 5) when "1011",
+  xAB(3 downto 0)&xAB(15 downto 4) when "1100",
+  xAB(2 downto 0)&xAB(15 downto 3) when "1101",
+  xAB(1 downto 0)&xAB(15 downto 2) when "1110",
+  xAB(0)&xAB(15 downto 1) when "1111",
+  xAB when others;
+  
+  iA<=D(31 downto 17)+aA(0); -- A= A +S[0] ilk atama
+  A<=rA + aA(conv_integer(I)); --aA[i] -- B=((B XOR A) <<<A + rB[I]
+  xBA<=yB XOR A;
+  
+  --Son 5 bit ile 16:1 coklayici
+  with A(3 downto 0)select
+  rB<=xBA(14 downto 0)&xBA(15) when "0001",
+  xBA(13 downto 0)&xBA(15 downto 14) when "0010",
+  xBA(12 downto 0)&xBA(15 downto 13) when "0011",
+  xBA(11 downto 0)&xBA(15 downto 12) when "0100",
+  xBA(10 downto 0)&xBA(15 downto 11) when "0101",
+  xBA(9 downto 0)&xBA(15 downto 10) when "0110",
+  xBA(8 downto 0)&xBA(15 downto 9) when "0111",
+  xBA(7 downto 0)&xBA(15 downto 8) when "1000",
+  xBA(6 downto 0)&xBA(15 downto 7) when "1001",
+  xBA(5 downto 0)&xBA(15 downto 6) when "1010",
+  xBA(4 downto 0)&xBA(15 downto 5) when "1011",
+  xBA(3 downto 0)&xBA(15 downto 4) when "1100",
+  xBA(2 downto 0)&xBA(15 downto 3) when "1101",
+  xBA(1 downto 0)&xBA(15 downto 2) when "1110",
+  xBA(0)&xBA(15 downto 1) when "1111",
+  xBA when others;
+  
+  iB<=D(15 downto 0) +aB(0);
+  B<=rB + aB(conv_integer(I));
+  --A yazmaci
+  pAyazmac:Process(r,s)
+  Begin
+    if(r='0')then --resetle
+    yA<=(OTHERS=>'0');
+  elsif(s'event and s='1')then
+  If(dSimdi=dYKL)then
+  yA<=iA;
+elsif(dSimdi=dSFRL)then
+yA<=A;
+end if;
+end if;
+end process pAyazmac;
+--B yazmaci
+pByazmac:process(r,s)
+Begin
+  If(r='0')then
+  yB<=(OTHERS=>'0');
+elsif(s'event and s='1')then
+if(dSimdi=dYKL)then
+yB<=iB;
+elsif(dSimdi=dSFRL)then
+yB<=B;
+end if;
+end if;
+end process pByazmac;
+pDurum:process(r,s)
+variable sayac:std_logic_vector(3 downto 0):="0000";
+begin
+  if(r='0')then
+  dSimdi<=dBSL;
+elsif(s'event and s='1')then
+case dSimdi is
+when dBSL=>
+  if(r='1')then
+  dSimdi<=dYKL;
+end if;
+when dYKL=>
+  dSimdi<=dSFRL;
+when dSFRL=> --12 olunca
+  if(sayac="1100")then
+  dSimdi<=dTMM;
+end if;
+when dTMM=>
+  dSimdi<=dBSL;
+end case;
+end if; 
+end process pDurum;
+
+--Sayici
+pSayac:process(r,s)
+variable sayac:std_logic_vector(3 downto 0):="0000";
+Begin
+  if(r='0')then
+  sayac:="0001";
+elsif(s'event and s='1')then
+if(dSimdi=dSFRL)then
+if(sayac="1100")then --12 olunca
+sayac:="0001";
+else sayac:=sayac + 1;
+end if;
+end if;
+end if;
+end process pSayac;
+F<=yA&yB;
+with dSimdi select
+tmm<='1' when dTMM,
+'0' when others;
+end struct;
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+

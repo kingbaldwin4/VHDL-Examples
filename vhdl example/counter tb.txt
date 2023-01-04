@@ -1,0 +1,36 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eTB_Counter is
+end eTB_Counter;
+Architecture arch of eTB_Counter is
+  Component eCounter is
+    Generic(n:natural:=4);
+    Port(f:out std_logic_vector(n-1 downto 0);
+      s,r:in std_logic);
+    end component;
+    constant m:natural:=4;
+    signal ts:std_logic;
+    signal tr:std_logic;
+    signal tf:std_logic_vector(m-1 downto 0);
+    constant sure:time:=150 ps;
+    begin
+      M1:eCounter generic map(n=>m)
+      port map(s=>ts,r=>tr,f=>tf);
+        process
+          begin
+          ts<='0';
+          tr<='1';
+          wait for sure*2;
+        ts<='1';
+        tr<='0';
+        wait for sure/2;
+        assert tf<="1000"
+        report "this is a report"
+        severity note;
+      end process;
+    end arch;

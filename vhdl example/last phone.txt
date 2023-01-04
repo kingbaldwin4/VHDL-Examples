@@ -1,0 +1,29 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eTelefon is
+  Port(x:in std_logic_vector(3 downto 0);
+    y:out std_logic_vector(3 downto 0);
+    z:in std_logic_vector(1 downto 0);
+    t:in std_logic_vector(1 downto 0));
+  end eTelefon;
+  Architecture struct of eTelefon is
+    Component eMUX is
+      port(a:in std_logic_vector(3 downto 0);
+        s:in std_logic_vector(1 downto 0);
+        b:out std_logic);
+      end Component;
+      Component eDEMUX is
+        port(c:in std_logic;
+          r:in std_logic_vector(1 downto 0);
+          d:out std_logic_vector(3 downto 0));
+        end Component;
+        signal h:std_logic;
+        begin
+          M1:eMUX port map(a=>x,s=>z,b=>h);
+            M2:eDEMUX port map(c=>h,r=>t,d=>y);
+            end struct;

@@ -1,0 +1,38 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use work.all;
+entity eSayici is
+end eSayici;
+architecture behv of eSayici is
+  component eCounter
+    port(s,r:in std_logic;
+    f:out std_logic_vector(3 downto 0));
+  end component;
+  signal ts:std_logic:='0';
+  signal tr:std_logic:='0';
+  signal tf:std_logic_vector(3 downto 0);
+  constant periyot:time:=100 ps;
+begin
+  M1:eCounter port map(s=>ts,r=>tr,f=>tf);
+    pSayici:process
+    begin
+      ts<='0';
+      wait for periyot/2;
+      ts<='1';
+      wait for periyot/2;
+    end process;
+    pSure:process
+    begin
+      tr<='1';
+      wait for 2*periyot;
+      tr<='0';
+      wait for 500 ps; --5 e kadar say
+      tr<='1';
+      wait for 100 ps;
+      tr<='0';
+      wait;
+    end process;
+  end behv;
+

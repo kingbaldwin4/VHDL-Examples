@@ -1,0 +1,24 @@
+Library IEEE;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+use IEEE.numeric_std.all;
+Entity eIkiliDosyaYaz is
+end eIkiliDosyaYaz;
+Architecture behv of eIkiliDosyaYaz is
+Begin
+  Process
+    type tTamsayiDosya is file of integer;
+    file dYaz:tTamsayiDosya
+    open Write_Mode is "ikiliDosya.bin";
+    variable tmsy:integer;
+    begin -- process
+      FOR i in 0 to 25 LOOP
+        write(dYaz,i); -- dosyaya dogrudan yaz
+        -- report "Yazilan deger:"&integer'image(i);
+      END LOOP; -- i
+      WAIT; -- simulasyon sonunda bekle
+    end process;
+  end behv;
+     
+       
+   

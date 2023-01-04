@@ -1,0 +1,49 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+entity eFile_o_y is
+end eFile_o_y;
+Architecture behv of eFile_o_y is
+  signal s,dsonu:bit:='0';
+  signal toku:integer:=-1;
+  --signal tyaz:integer:=1;
+  signal satir_no:integer:=1;
+begin
+  pSaat:process(s)
+  begin
+    s<=not(s) after 50 ps;
+  end process pSaat;
+  pOku:process
+  file dOku: text open read_mode is "C:\dosyaoku.txt";
+  variable lsatir:line;
+  variable t:integer;
+  begin
+    wait until(s'event and s='1');
+    if(not endfile(dOku))then
+    readline(dOku,lsatir);
+    read(lsatir,t);
+    toku<=t;
+  else
+    dsonu<='1'; --dosya sonuna ulasildi
+  end if;
+end process pOku;
+pYaz:process
+file dYaz:text open write_mode is "C:\dosyayaz.txt";
+variable lsatir:line;
+begin
+  wait until(s'event and s='0');
+  if(dsonu='0' and toku/=-1)then
+  write(lsatir,satir_no);
+  write(lsatir,toku);
+  write(lsatir,toku,right,10);
+  write(lsatir,toku,left,10);
+  writeline(dYaz,lsatir);
+  satir_no<=satir_no+1;
+end if;
+end process pYaz;
+end behv;
+  
+

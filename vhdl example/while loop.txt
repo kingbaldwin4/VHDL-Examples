@@ -1,0 +1,22 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eLoop is
+end eLoop;
+Architecture arch of eLoop is
+Begin
+  process is
+  variable i:integer:=0;
+  begin
+    Dongu:while i<20 loop
+      report "i="&integer'image(i);
+      i:=i+2;
+      exit Dongu when i=16;
+    end loop;
+    wait for 400 ps;
+  end process;
+end arch;

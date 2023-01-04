@@ -1,0 +1,18 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eOnly is
+end eOnly;
+Architecture struct of eOnly is
+  begin
+    process
+      variable veri:line;
+      begin
+      readline(input,veri);
+      writeline(output,veri);
+    end process;
+  end struct;

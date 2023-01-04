@@ -1,0 +1,32 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eALU is
+  Port(s:in std_logic;
+  m:out std_logic);
+  end eALU;
+  Architecture struct of eALU is
+    Component eAnd is
+      port(a,b:in std_logic;
+        c:out std_logic);
+      end component;
+      component eOr is 
+        port(d,e:in std_logic;
+          f:out std_logic);
+        end component;
+        signal k:std_logic;
+        signal l:std_logic;
+        signal x:std_logic;
+        signal y:std_logic;
+        begin
+          M1:eAnd port map(a=>k,b=>l,c=>x);
+            M2:eOr port map(d=>k,e=>l,f=>y);
+              with s select
+              m<=y when '0',
+              x when '1',
+              'Z' when others;
+            end struct;

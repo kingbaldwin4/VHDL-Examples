@@ -1,0 +1,34 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eCube is
+end eCube;
+Architecture struct of eCube is
+  File giris:text;
+  File cikis:text;
+  Begin
+  process
+    variable satir:line;
+    variable x:string(6 downto 1);
+    variable y:string(7 downto 1);
+    begin
+       file_open(giris,"C:\kobe.txt",read_mode);
+  file_open(cikis,"C:\lebron.txt",write_mode);
+  while not endfile(giris)loop
+    readline(giris,satir);
+    read(satir,x);
+    readline(giris,satir);
+    read(satir,y);
+  end loop;
+  write(satir,x);
+  writeline(cikis,satir);
+  write(satir,y);
+  writeline(cikis,satir);
+  file_close(giris);
+  file_close(cikis);
+end process;
+end struct;

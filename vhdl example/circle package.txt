@@ -1,0 +1,48 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Use IEEE.math_real.all;
+package Love is
+  function fAlan(r:real)return real;
+  procedure pCevre(signal r:in real;signal c:out real);
+end Love;
+package body Love is
+  function fAlan(r:real)return real is
+  variable a:real:=0.00;
+  constant pi:real:=3.14;
+  begin
+    a:=r*r*pi;
+    return a;
+  end fAlan;
+    procedure pCevre(signal r:in real;signal c:out real)is
+    constant pi:real:=3.14;
+    begin
+      c<=2.00*pi*r;
+    end pCevre;
+  end Love;
+
+
+
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Use IEEE.math_real.all;
+Use work.Love.all;
+Entity eCircle is
+  Port(y:in real;
+    f,p:out real);
+  end eCircle;
+  Architecture struct of eCircle is
+    Begin
+    f<=fAlan(y);
+    pCevre(y,p);
+  end struct;
+    

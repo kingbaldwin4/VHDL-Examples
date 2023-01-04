@@ -1,0 +1,48 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Entity eRAM is
+  Generic(e_sayi:integer:=8;
+  e_boyut:integer:=4;
+  e_adr:integer:=3);
+  Port(x:in std_logic_vector(e_boyut-1 downto 0);
+    o_y:in std_logic;
+    s:in std_logic;
+    adr:in std_logic_vector(e_adr-1 downto 0);
+    f:out std_logic_vector(e_boyut-1 downto 0));
+  end eRAM;
+  architecture behv of eRAM is
+    type RAMdizi is array (0 to e_sayi-1)of
+    std_logic_vector(e_boyut-1 downto 0);
+    signal RAMbellek:RAMdizi:=(    
+    0=>"0000",
+    1=>"0001",
+    2=>"0010",
+    3=>"0011",
+    4=>"0100",
+    5=>"0101",
+    6=>"0110",
+    7=>"0111",
+  others=>"1111");
+  begin
+    oku:process(s,o_y)
+    begin
+      if(s'event and s='1')then
+      if o_y='0' then
+    f<=RAMbellek(conv_integer(adr));
+  end if;
+end if;
+end process oku;
+yaz:process(s,o_y)
+begin
+  if(s'event and s='1')then
+  if o_y='1' then
+  RAMbellek(conv_integer(adr))<=x;
+end if;
+end if;
+end process yaz;
+end behv;

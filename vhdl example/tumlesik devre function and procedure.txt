@@ -1,0 +1,36 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_arith.all;
+Use IEEE.std_logic_unsigned.all;
+Use IEEE.numeric_std.all;
+Use IEEE.std_logic_textio.all;
+Use std.textio.all;
+Use IEEE.math_real.all;
+Entity eTumlesik is
+  Port(a,b,c,d:in std_logic;
+    f:out std_logic);
+  end eTumlesik;
+  Architecture behv of eTumlesik is
+    function fVeya(x,y:std_logic)return std_logic is
+    variable z:std_logic;
+    begin
+      z:=x or y;
+      return z;
+    end fVeya;
+    function fVe(k,l:std_logic)return std_logic is
+    variable m:std_logic;
+    begin
+      m:=k and l;
+      return m;
+    end fVe;
+    procedure pNor(signal q,w:in std_logic;signal t:out std_logic)is
+    begin
+      t<=q nor w;
+    end pNor;
+    signal e:std_logic;
+    signal g:std_logic;
+    Begin
+    e<=fVeya(a,b);
+    pNor(c,d,g);
+    f<=fVe(e,g);
+  end behv;
